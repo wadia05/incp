@@ -1,0 +1,11 @@
+# version: '3.8'
+
+services:
+  nginx:
+    build: ./req/nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./data/html:/var/www/html
+    network_mode: host
