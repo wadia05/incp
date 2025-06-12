@@ -1,10 +1,21 @@
 FROM debian:bookworm
 
-RUN apt update && apt  install mariadb-server -y && rm -rf /var/lib/apt/lists/*
+# Install MariaDB and required packages
+RUN apt update && \
+    apt install -y mariadb-server &&\
+    rm -rf /var/lib/apt/lists/*
 
-COPY ./DB_conf.sh  /bin/DB_conf.sh
+# Create necessary directories and set permissions
+# RUN mkdir -p /run/mysqld && \
+#     chown mysql:mysql /run/mysqld && \
+#     chmod 755 /run/mysqld
 
-ENTRYPOINT [ "/bin/DB_conf.sh" ]
-# CMD ["/bin/DB_conf.sh"]
-# daemon off is used to run nginx in the foreground, which is required for Docker containers and 
-# keep the container running.
+# Copy configuration script
+COPY ./DB_conf.sh /bin/DB_conf.sh
+RUN chmod +x /bin/DB_conf.sh
+
+# Expose MariaDB port
+# EXPOSE 3306
+
+# Set entrypoint
+ENTRYPOINT ["/bin/DB_conf.sh"]

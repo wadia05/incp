@@ -1,16 +1,16 @@
-# version: '3.8'
-
 services:
   nginx:
     build: ./req/nginx
     container_name: nginx
     ports:
-      - "433:443"
+      - "443:443"
     volumes:
       - ./data/html:/var/www/html
     restart: always
-    network_mode: host
-  maria:
+    networks:
+      - app-network
+    
+  mariadb:
     build: ./req/mariadb
     container_name: mariadb
     environment:
@@ -22,8 +22,19 @@ services:
       - "3306:3306"
     restart: always
     volumes:
-          - DB_wd:/var/lib/mysql
-    network_mode: host
-    
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+    # healthcheck:
+    #   test: ["CMD", "mysqladmin", "ping", "--socket=/run/mysqld/mysqld.sock", "--silent"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
+    #   start_period: 30s
+
+networks:
+  app-network:
+    driver: bridge
+
 volumes:
-  DB_wd:
+  db_data:
