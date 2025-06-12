@@ -5,7 +5,25 @@ services:
     build: ./req/nginx
     container_name: nginx
     ports:
-      - "80:80"
+      - "433:443"
     volumes:
       - ./data/html:/var/www/html
+    restart: always
     network_mode: host
+  maria:
+    build: ./req/mariadb
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+    ports:
+      - "3306:3306"
+    restart: always
+    volumes:
+          - DB_wd:/var/lib/mysql
+    network_mode: host
+    
+volumes:
+  DB_wd:
